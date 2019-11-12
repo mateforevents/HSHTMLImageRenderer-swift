@@ -1,0 +1,22 @@
+Knowledgebase
+=============
+
+This HSHTMLImageRenderer-swift is a modern form of a previously created project written in Objective-C and using UIWebView.
+
+Now that UIWebView has been permanently deprecated, that solution no longer works.
+
+Unfortunately it was not as simple as swapping out UIWebView with WKWebView and hoping it would all work again.
+
+So the approach is similar, in that we have to have a WKWebView in the UIWindow's hierarchy, buried at the back somewhere, and we use a serial OperationQueue and Operation objects to use this WKWebView to render HTML content.
+
+There are a few tricks:
+    - The WKWebView's html template has to have a min/max zoom scale of 1, otherwise the rendering could be an issue.
+    - The one aspect of this rendering is clear; we need at a minimum a target width for the content.  As such, we take this 'hidden webview' and resize it to the target width, meaning any content rendered will be inside the frame at a zoom scale of 1.0, making it straightforward to extract images.
+    - WKWebView is a bitch.  It was adding some top margin because I needed to add this line:
+        `webview.scrollView.contentInsetAdjustmentBehavior = .never`
+        - apparently it was adding that by default.  Grrr....
+    - Once you have those in place, then the image can be dynamically generated and it fits the content based on the targetWidth.
+    
+    
+        
+    

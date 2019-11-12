@@ -23,7 +23,15 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var imageView: UIImageView!
     
-    let testHTML = "<p>I just want to render some HTML.</p><p>It took quite a lot of trial and error to make the underlying WebView render things as I wanted it to!</p><p>It took quite a lot of trial and error to make the underlying WebView render things as I wanted it to!</p>"
+//    let testHTML = "<p>I just want to render some HTML.</p><p>It took quite a lot of trial and error to make the underlying WebView render things as I wanted it to!</p><p>It took quite a lot of trial and error to make the underlying WebView render things as I wanted it to!</p>"
+    
+    let testSnippet = "<p style=\"text-align:center\"><span style=\"font-size:24pt\">{{guest_attribute_default_meta_attribute__title}} {{guest_name}}</span></p><p style=\"text-align:center\"><span style=\"font-size:16.0px\">{{guest_attribute_22ec88e1-45c0-486f-8863-9438fa489aae}}</span></p>"
+    
+    let snippetReplacements: [String: String] = [
+        "guest_attribute_default_meta_attribute__title": "Dr.",
+        "guest_name" : "Apu Nahasapeemapetilon",
+        "guest_attribute_22ec88e1-45c0-486f-8863-9438fa489aae": "Kwik-E-Mart Productions GmbH"
+    ]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,7 +49,16 @@ class ViewController: UIViewController {
         }
         
         let renderer = HSHTMLImageRenderer.sharedRenderer(in: window)
-        renderer.renderHTML(testHTML,
+        let snippetTransformer = MateSnippetConverter()
+        
+        let testReplacements = snippetReplacements
+        
+        renderer.templateTransformer.snippetTransformer = { (snippet, template) in
+            let result = snippetTransformer.convert((snippet: snippet, template: template), replacements: testReplacements)
+            return (result.snippet, result.template)
+        }
+        
+        renderer.renderHTML(testSnippet,
                             identifier: "Test",
                             intent: .standard,
                             attributes: [
@@ -83,11 +100,11 @@ class ViewController: UIViewController {
             TemplateAttributes.Key.font: UIFont(name: "Helvetica", size: 7)!
         ]
         
-        HSHTMLImageRenderer.shared.renderHTML(testHTML,
+        HSHTMLImageRenderer.shared.renderHTML(testSnippet,
                                               identifier: "Test",
                                               intent: .standard,
                                               attributes: newAttributes,
-                                              ignoreCache: true,
+                                              ignoreCache: true, /* ignore the cache because attribs have changed. */
                                               cacheResult: true) { [weak self] (_, image, wasCached, error) in
                                                 if let e = error {
                                                     print("Rendering error: \(e.localizedDescription)")

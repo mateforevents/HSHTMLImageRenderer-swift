@@ -33,7 +33,7 @@ public struct TemplateAttributes {
     }()
 }
 
-public class HSHTMLTemplateHelper {
+public class HSHTMLTemplateTransformer {
     
     public enum TemplateError: Error {
         /// happens if you haven't included all the required attributes to render the HTML properly

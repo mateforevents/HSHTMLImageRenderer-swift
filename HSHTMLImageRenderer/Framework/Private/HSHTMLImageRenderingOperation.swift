@@ -78,20 +78,20 @@ class HSHTMLImageRenderingOperation: HSAsyncOperation {
         let baseURL: URL? = nil
         
         
-        guard let helper = self.renderer?.templateHelper else {
+        guard let transformer = self.renderer?.templateTransformer else {
             self._error = RenderError.unexpected
             finish()
             return
         }
         
         if self.intent == .standard {
-            let template = helper.defaultTemplate()
-            helper.registerTemplate(template, identifier: "standard")
+            let template = transformer.defaultTemplate()
+            transformer.registerTemplate(template, identifier: "standard")
         }
         
         do {
             
-            let modifiedString: String = try helper.presentationHTML(with: self.htmlToLoad,
+            let modifiedString: String = try transformer.presentationHTML(with: self.htmlToLoad,
                                                                      usingTemplateWithIdentifier: "standard",
                                                                      attributes: self.attributes)
             

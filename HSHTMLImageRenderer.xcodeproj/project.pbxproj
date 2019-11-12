@@ -7,11 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D8C5020E237ACC3D009CA6B2 /* MateSnippetConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C5020D237ACC3D009CA6B2 /* MateSnippetConverter.swift */; };
+		D8C50210237AD26C009CA6B2 /* ModelProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C5020F237AD26C009CA6B2 /* ModelProtocols.swift */; };
 		DC787EB6237AB78900BCF5B1 /* HSHTMLImageRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = DC787EB4237AB78900BCF5B1 /* HSHTMLImageRenderer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DC787EC8237AB7B600BCF5B1 /* default_template.html in Resources */ = {isa = PBXBuildFile; fileRef = DC787EBF237AB7B600BCF5B1 /* default_template.html */; };
 		DC787EC9237AB7B600BCF5B1 /* HSHTMLImageRenderingOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC787EC1237AB7B600BCF5B1 /* HSHTMLImageRenderingOperation.swift */; };
 		DC787ECA237AB7B600BCF5B1 /* HSRenderingWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC787EC2237AB7B600BCF5B1 /* HSRenderingWebView.swift */; };
-		DC787ECB237AB7B600BCF5B1 /* HSHTMLTemplateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC787EC3237AB7B600BCF5B1 /* HSHTMLTemplateHelper.swift */; };
+		DC787ECB237AB7B600BCF5B1 /* HSHTMLTemplateTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC787EC3237AB7B600BCF5B1 /* HSHTMLTemplateTransformer.swift */; };
 		DC787ECC237AB7B600BCF5B1 /* HSAsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC787EC4237AB7B600BCF5B1 /* HSAsyncOperation.swift */; };
 		DC787ECD237AB7B600BCF5B1 /* HSHTMLImageRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC787EC5237AB7B600BCF5B1 /* HSHTMLImageRenderer.swift */; };
 		DC787ECE237AB7B600BCF5B1 /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC787EC7237AB7B600BCF5B1 /* UIColor+Hex.swift */; };
@@ -57,6 +59,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D8C5020A237AC22C009CA6B2 /* Knowledgebase.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Knowledgebase.txt; sourceTree = "<group>"; };
+		D8C5020B237AC22D009CA6B2 /* Todo.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Todo.txt; sourceTree = "<group>"; };
+		D8C5020D237ACC3D009CA6B2 /* MateSnippetConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MateSnippetConverter.swift; sourceTree = "<group>"; };
+		D8C5020F237AD26C009CA6B2 /* ModelProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelProtocols.swift; sourceTree = "<group>"; };
 		DC787EB1237AB78900BCF5B1 /* HSHTMLImageRenderer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HSHTMLImageRenderer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC787EB4237AB78900BCF5B1 /* HSHTMLImageRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HSHTMLImageRenderer.h; sourceTree = "<group>"; };
 		DC787EB5237AB78900BCF5B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -64,7 +70,7 @@
 		DC787EBF237AB7B600BCF5B1 /* default_template.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = default_template.html; sourceTree = "<group>"; };
 		DC787EC1237AB7B600BCF5B1 /* HSHTMLImageRenderingOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HSHTMLImageRenderingOperation.swift; sourceTree = "<group>"; };
 		DC787EC2237AB7B600BCF5B1 /* HSRenderingWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HSRenderingWebView.swift; sourceTree = "<group>"; };
-		DC787EC3237AB7B600BCF5B1 /* HSHTMLTemplateHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HSHTMLTemplateHelper.swift; sourceTree = "<group>"; };
+		DC787EC3237AB7B600BCF5B1 /* HSHTMLTemplateTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HSHTMLTemplateTransformer.swift; sourceTree = "<group>"; };
 		DC787EC4237AB7B600BCF5B1 /* HSAsyncOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HSAsyncOperation.swift; sourceTree = "<group>"; };
 		DC787EC5237AB7B600BCF5B1 /* HSHTMLImageRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HSHTMLImageRenderer.swift; sourceTree = "<group>"; };
 		DC787EC7237AB7B600BCF5B1 /* UIColor+Hex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex.swift"; sourceTree = "<group>"; };
@@ -108,12 +114,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D8C5020C237ACC2D009CA6B2 /* TestConverters */ = {
+			isa = PBXGroup;
+			children = (
+				D8C5020D237ACC3D009CA6B2 /* MateSnippetConverter.swift */,
+				D8C5020F237AD26C009CA6B2 /* ModelProtocols.swift */,
+			);
+			path = TestConverters;
+			sourceTree = "<group>";
+		};
 		DC787EA7237AB78900BCF5B1 = {
 			isa = PBXGroup;
 			children = (
 				DC787EBC237AB7AF00BCF5B1 /* README.md */,
 				DC787ECF237AB88400BCF5B1 /* Podfile */,
 				DC787ED0237AB89F00BCF5B1 /* HSHTMLImageRenderer.podspec */,
+				D8C5020A237AC22C009CA6B2 /* Knowledgebase.txt */,
+				D8C5020B237AC22D009CA6B2 /* Todo.txt */,
 				DC787EB3237AB78900BCF5B1 /* HSHTMLImageRenderer */,
 				DC787ED6237ABF6900BCF5B1 /* HTMLRendererDemo */,
 				DC787EED237ABF6E00BCF5B1 /* HTMLRendererDemoTests */,
@@ -166,7 +183,7 @@
 			children = (
 				DC787EC1237AB7B600BCF5B1 /* HSHTMLImageRenderingOperation.swift */,
 				DC787EC2237AB7B600BCF5B1 /* HSRenderingWebView.swift */,
-				DC787EC3237AB7B600BCF5B1 /* HSHTMLTemplateHelper.swift */,
+				DC787EC3237AB7B600BCF5B1 /* HSHTMLTemplateTransformer.swift */,
 				DC787EC4237AB7B600BCF5B1 /* HSAsyncOperation.swift */,
 			);
 			path = Private;
@@ -183,6 +200,7 @@
 		DC787ED6237ABF6900BCF5B1 /* HTMLRendererDemo */ = {
 			isa = PBXGroup;
 			children = (
+				D8C5020C237ACC2D009CA6B2 /* TestConverters */,
 				DC787ED7237ABF6900BCF5B1 /* AppDelegate.swift */,
 				DC787EDB237ABF6900BCF5B1 /* ViewController.swift */,
 				DC787EDD237ABF6900BCF5B1 /* Main.storyboard */,
@@ -355,7 +373,7 @@
 			files = (
 				DC787EC9237AB7B600BCF5B1 /* HSHTMLImageRenderingOperation.swift in Sources */,
 				DC787ECD237AB7B600BCF5B1 /* HSHTMLImageRenderer.swift in Sources */,
-				DC787ECB237AB7B600BCF5B1 /* HSHTMLTemplateHelper.swift in Sources */,
+				DC787ECB237AB7B600BCF5B1 /* HSHTMLTemplateTransformer.swift in Sources */,
 				DC787ECE237AB7B600BCF5B1 /* UIColor+Hex.swift in Sources */,
 				DC787ECA237AB7B600BCF5B1 /* HSRenderingWebView.swift in Sources */,
 				DC787ECC237AB7B600BCF5B1 /* HSAsyncOperation.swift in Sources */,
@@ -367,7 +385,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC787EDC237ABF6900BCF5B1 /* ViewController.swift in Sources */,
+				D8C50210237AD26C009CA6B2 /* ModelProtocols.swift in Sources */,
 				DC787ED8237ABF6900BCF5B1 /* AppDelegate.swift in Sources */,
+				D8C5020E237ACC3D009CA6B2 /* MateSnippetConverter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

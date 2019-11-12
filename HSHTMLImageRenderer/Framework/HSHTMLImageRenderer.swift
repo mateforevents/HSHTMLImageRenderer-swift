@@ -92,7 +92,7 @@ public class HSHTMLImageRenderer: NSObject {
         return NSCache<NSString, UIImage>()
     }()
     
-    internal let templateHelper = HSHTMLTemplateHelper()
+    public let templateTransformer = HSHTMLTemplateTransformer()
     
     public var isSuspended: Bool {
         set {
@@ -164,7 +164,7 @@ public class HSHTMLImageRenderer: NSObject {
         _webView?.removeFromSuperview()
         _webView = nil
         
-        templateHelper.finishUsingTemplates()
+        templateTransformer.finishUsingTemplates()
         return true
     }
 }

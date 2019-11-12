@@ -1,0 +1,8 @@
+TODO: HSHTMLImageRenderer
+
+- Try it out with real data from the MATE backend.
+
+
+example raw server snippet (escaped):
+
+"<p style=\"text-align:center\"><span style=\"font-size:24pt\">{{guest_attribute_default_meta_attribute__title}} {{guest_name}}</span></p><p style=\"text-align:center\"><span style=\"font-size:16.0px\">{{guest_attribute_22ec88e1-45c0-486f-8863-9438fa489aae}}</span></p>"
