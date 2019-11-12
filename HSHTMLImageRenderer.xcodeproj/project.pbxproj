@@ -29,6 +29,8 @@
 		DC787EC4237AB7B600BCF5B1 /* HSAsyncOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HSAsyncOperation.swift; sourceTree = "<group>"; };
 		DC787EC5237AB7B600BCF5B1 /* HSHTMLImageRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HSHTMLImageRenderer.swift; sourceTree = "<group>"; };
 		DC787EC7237AB7B600BCF5B1 /* UIColor+Hex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex.swift"; sourceTree = "<group>"; };
+		DC787ECF237AB88400BCF5B1 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
+		DC787ED0237AB89F00BCF5B1 /* HSHTMLImageRenderer.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = HSHTMLImageRenderer.podspec; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,6 +48,8 @@
 			isa = PBXGroup;
 			children = (
 				DC787EBC237AB7AF00BCF5B1 /* README.md */,
+				DC787ECF237AB88400BCF5B1 /* Podfile */,
+				DC787ED0237AB89F00BCF5B1 /* HSHTMLImageRenderer.podspec */,
 				DC787EB3237AB78900BCF5B1 /* HSHTMLImageRenderer */,
 				DC787EB2237AB78900BCF5B1 /* Products */,
 			);
