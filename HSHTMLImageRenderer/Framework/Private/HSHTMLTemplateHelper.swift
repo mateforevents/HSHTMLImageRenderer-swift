@@ -11,15 +11,15 @@ import UIKit
 public struct TemplateAttributes {
     
     public struct Key {
-        static let lineHeight = "__LINE_HEIGHT__"
-        static let fontSize = "__FONT_SIZE__"
-        static let textColor = "__TEXT_COLOR__"
-        static let backgroundColor = "__BACKGROUND_COLOR__"
-        static let targetWidth = "__OUTPUT_WIDTH__"
-        static let targetHeight = "__OUTPUT_HEIGHT__"
-        static let bodyText = "__HTML_BODY__"
-        static let fontFamily = "__FONT_FAMILY__"
-        static let font = "TemplateFont"
+        public static let lineHeight = "__LINE_HEIGHT__"
+        public static let fontSize = "__FONT_SIZE__"
+        public static let textColor = "__TEXT_COLOR__"
+        public static let backgroundColor = "__BACKGROUND_COLOR__"
+        public static let targetWidth = "__OUTPUT_WIDTH__"
+        public static let targetHeight = "__OUTPUT_HEIGHT__"
+        public static let bodyText = "__HTML_BODY__"
+        public static let fontFamily = "__FONT_FAMILY__"
+        public static let font = "TemplateFont"
     }
     
     public static var defaultTemplateAttributes: [String: Any] = {
@@ -35,7 +35,7 @@ public struct TemplateAttributes {
 
 public class HSHTMLTemplateHelper {
     
-    enum TemplateError: Error {
+    public enum TemplateError: Error {
         /// happens if you haven't included all the required attributes to render the HTML properly
         case invalidTemplate
     }
@@ -43,21 +43,21 @@ public class HSHTMLTemplateHelper {
     fileprivate var templateRegistry: [String: String] = [:]
     
     // incoming snippet, outgoing snippet
-    var snippetTransformer: ((_ snippet: String, _ template: String) -> (transformedSnippet: String, transformedTemplate: String))? = nil
+    public var snippetTransformer: ((_ snippet: String, _ template: String) -> (transformedSnippet: String, transformedTemplate: String))? = nil
     
-    func defaultTemplate() -> String {
+    public func defaultTemplate() -> String {
         let template = try! String(contentsOf: self.defaultTemplateURL(), encoding: .utf8)
         return template
     }
     
-    func defaultTemplateURL() -> URL {
-        guard let url = Bundle.main.url(forResource: "default_template.html", withExtension: nil) else {
+    public func defaultTemplateURL() -> URL {
+        guard let url = Bundle(for: HSHTMLImageRenderer.self).url(forResource: "default_template.html", withExtension: nil) else {
             fatalError("Handle this better.  Resource couldn't be located.")
         }
         return url
     }
     
-    func registerTemplate(_ template: String, identifier: String) {
+    public func registerTemplate(_ template: String, identifier: String) {
         templateRegistry[identifier] = template
     }
     
@@ -88,7 +88,7 @@ public class HSHTMLTemplateHelper {
     
     // MARK: - Helpers
     
-    func validateTemplate(_ template: String, attributes: [String]) -> Bool {
+    public func validateTemplate(_ template: String, attributes: [String]) -> Bool {
         
         let requiredAttributeKeys = [
             TemplateAttributes.Key.lineHeight,
@@ -117,7 +117,7 @@ public class HSHTMLTemplateHelper {
         return validateTemplate(template, attributes: [])
     }
     
-    func finishUsingTemplates() {
+    public func finishUsingTemplates() {
         self.templateRegistry.removeAll()
     }
     
