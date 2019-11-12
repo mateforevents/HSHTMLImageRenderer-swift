@@ -56,7 +56,7 @@ Pod::Spec.new do |spec|
   #  profile URL.
   #
 
-  spec.author             = { "horseshoe7" => "ocon.sc@gmail.com" }
+  spec.author             = { "Stephen O'Connor" => "ocon.sc@gmail.com" }
   # Or just: spec.author    = "horseshoe7"
   # spec.authors            = { "horseshoe7" => "ocon.sc@gmail.com" }
   # spec.social_media_url   = "https://twitter.com/horseshoe7"
@@ -84,7 +84,7 @@ Pod::Spec.new do |spec|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  spec.source       = { :git => "http://EXAMPLE/HSHTMLImageRenderer.git", :tag => "#{spec.version}" }
+  spec.source       = { :git => "git@github.com:horseshoe7/HSHTMLImageRenderer-swift.git", :tag => "#{spec.version}" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
