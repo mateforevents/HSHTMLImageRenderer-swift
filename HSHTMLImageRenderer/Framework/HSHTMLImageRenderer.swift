@@ -224,7 +224,7 @@ extension HSHTMLImageRenderer: WKNavigationDelegate {
         ");"  // formerly "document.height"
         
         webView.evaluateJavaScript(javascriptHeightString) { (result, error) in
-            guard let height = result as? CGFloat else {
+            guard let _ = result as? CGFloat else {
                 fatalError("DID NOT EXPECT THIS.  Failing")
             }
             self.notifyOperationThatWebviewCompletedLoading(self.webView)

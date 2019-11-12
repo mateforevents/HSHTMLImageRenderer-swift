@@ -102,7 +102,7 @@ values;
                 completion(.zero, .zero, error)
                 return
             }
-            if let height = value as? CGFloat {
+            if let _ = value as? CGFloat {
                 
                 self.evaluateJavaScript(containerRect) { [weak self] (rectValues, rectError) in
                     guard let `self` = self else { return }

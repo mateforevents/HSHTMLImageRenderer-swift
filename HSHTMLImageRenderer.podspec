@@ -84,7 +84,7 @@ Pod::Spec.new do |spec|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  spec.source       = { :git => "git@github.com:horseshoe7/HSHTMLImageRenderer-swift.git", :tag => "#{spec.version}" }
+  spec.source       = { :git => "https://github.com/horseshoe7/HSHTMLImageRenderer-swift.git", :tag => "#{spec.version}" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
