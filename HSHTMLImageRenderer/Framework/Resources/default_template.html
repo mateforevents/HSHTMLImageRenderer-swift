@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>HTML Image Rendering Template</title>
+        <!-- MIT License -->
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0,width=__OUTPUT_WIDTH__,user-scalable=no" />
+        <style type="text/css">
+            /* http://meyerweb.com/eric/tools/css/reset/
+             v2.0 | 20110126
+             License: none (public domain)
+             */
+        
+        html, body, div, span, applet, object, iframe,
+        h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+        a, abbr, acronym, address, big, cite, code,
+        del, dfn, em, img, ins, kbd, q, s, samp,
+        small, strike, strong, sub, sup, tt, var,
+        b, u, i, center,
+        dl, dt, dd, ol, ul, li,
+        fieldset, form, label, legend,
+        table, caption, tbody, tfoot, thead, tr, th, td,
+        article, aside, canvas, details, embed,
+        figure, figcaption, footer, header, hgroup,
+        menu, nav, output, ruby, section, summary,
+        time, mark, audio, video {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            vertical-align: baseline;
+        }
+        /* HTML5 display-role reset for older browsers */
+        article, aside, details, figcaption, figure,
+        footer, header, hgroup, menu, nav, section {
+            display: block;
+        }
+        body {
+            line-height: 1.0;
+            background-color: __BACKGROUND_COLOR__;
+            font-family: __FONT_FAMILY__;
+            font-size: __FONT_SIZE__px;
+            color: __TEXT_COLOR__;
+            padding: 0;
+        }
+        p+p {
+            padding: .5em 0 0 0;
+        }
+        ol, ul {
+            padding: 0 0 0 2em;
+        }
+        blockquote, q {
+            quotes: none;
+        }
+        blockquote:before, blockquote:after,
+        q:before, q:after {
+            content: '';
+            content: none;
+        }
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+        #render_container{
+            
+            line-height: __LINE_HEIGHT__;
+            width: __OUTPUT_WIDTH__px;
+            __OUTPUT_HEIGHT__;
+            margin: 0px;
+            display:block;
+        }
+        /*
+         This is where you could inject more CSS if you needed to.  Your code
+         should do a find and replace and at a minimum remove this line __ADDITIONAL_CSS__ below
+         */
+        __ADDITIONAL_CSS__
+        
+        </style>
+    </head>
+    <body>
+        <div id="render_container">
+            __HTML_BODY__
+        </div>
+    </body>
+</html>
