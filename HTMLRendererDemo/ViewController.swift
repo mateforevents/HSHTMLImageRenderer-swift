@@ -62,8 +62,8 @@ class ViewController: UIViewController {
                             identifier: "Test",
                             intent: .standard,
                             attributes: [
-                                TemplateAttributes.Key.targetWidth : targetWidth
-                                /*TemplateAttributes.Key.targetHeight : targetHeight,*/
+                                TemplateAttributes.Key.targetWidth : targetWidth/*,
+                                TemplateAttributes.Key.targetHeight : targetHeight*/
                             ],
                             ignoreCache: false,
                             cacheResult: true) { [weak self] (identifier, image, wasCached, error) in
