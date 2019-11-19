@@ -29,11 +29,37 @@ struct FontSize {
             return self.allCases.map { $0.rawValue }
         }
     }
+    
+    var cssValue: String {
+        return "\(value)\(unit.rawValue);"
+    }
+    
+    /// should return fontSize in .em
+    func normalize(baseFontSizeInPt: Float, viewportWidth: Float) -> FontSize {
+        switch self.unit {
+        case .pixels:
+            #warning("Do you need to do a scale conversion?")
+            let relative = self.value / baseFontSizeInPt
+            return FontSize(value: relative, unit: .relative)
+        case .points:
+            let relative = self.value / baseFontSizeInPt
+            return FontSize(value: relative, unit: .relative)
+        default:
+            fatalError("Did not know we could get values like this: \(self.unit.rawValue)")
+        }
+    }
 }
 
 class MateSnippetConverter: NSObject {
     
-    static let shared = MateSnippetConverter()
+    enum SupportedAttributes: String {
+        case fontSize = "font-size:" // matches the CSS property
+        case textAlignment = "text-align:" // matches the CSS property
+    }
+    
+    enum ParsingError: Error {
+        case unexpected
+    }
     
     public var guest: Guest?  // user info, etc.
     public var event: Event?  // QR Code info, data, etc.
@@ -42,6 +68,8 @@ class MateSnippetConverter: NSObject {
     internal var xmlParser: XMLParser?
     internal var regex: NSRegularExpression?
     internal var templateValueReplacements: [String: String]?
+    
+    let targetOutputWidth: Float
     
     var transformedSnippet: String = ""
     var cssToInject: String = ""
@@ -58,10 +86,34 @@ class MateSnippetConverter: NSObject {
         let content: String
         let attributes: [String: Any]
     }
-    var contentElements: [ContentElement] = []
     
-    override init() {
+    /// what we parse from a snippet
+    var originalContentElements: [ContentElement] = []
+    
+    /// the adjusted originalContentElements whose fontSizes are in a parametric format, relative to a base font-size which is determined in relation to the targetOutputSize
+    var normalizedContentElements: [ContentElement] = []
+    
+    init(targetOutputWidth: Float) {
+        self.targetOutputWidth = targetOutputWidth
         super.init()
+    }
+    
+    static func baseFontSize(for targetWidth: Float) -> Float {
+        
+        // key is target width, value is base size.  Should be in increasing order.
+        let nominalSizes: [(Float, Float)] = [
+            (300, 18),
+            (500, 22)
+        ]
+        var chosenPairing = nominalSizes.first!
+        for pairing in nominalSizes {
+            if targetWidth < pairing.0 {
+                return chosenPairing.1
+            } else {
+                chosenPairing = pairing
+            }
+        }
+        return chosenPairing.1
     }
     
     func convert(_ data: ConversionData, replacements: [String: String]) -> ConversionData {
@@ -76,60 +128,52 @@ class MateSnippetConverter: NSObject {
         
         self.templateValueReplacements = replacements
         
-        self.contentElements = []
+        self.originalContentElements = []
         
         let success = parser.parse()
     
+        // self.originalContentElements should now be parsed.
         
         // what we should have now is an array of ContentElement objects, that are analogously like the incoming snippet.
         // that snippet has a series of `p` tags, embedded in them span tags, and the css is scattered throughout their tag attributes.
+
+        // now we have organized these into single elements that can be re-written into div tags.
+        let baseSize = MateSnippetConverter.baseFontSize(for: self.targetOutputWidth)
         
-        // first, THIS CLASS needs to include target size of the label.  It will help determine how to scale the fonts.
+        // using the targetOutputWidth property of this object, we can re-calculate the fontSize values.
+        self.normalizedContentElements = self.originalContentElements.map({ (original) -> ContentElement in
+            
+            guard let originalFont = original.attributes[SupportedAttributes.fontSize.rawValue] as? FontSize else {
+                fatalError("I don't think this can happen.")
+            }
+            
+            let normalizedFont = originalFont.normalize(baseFontSizeInPt: baseSize, viewportWidth: self.targetOutputWidth)
+            
+            var newAttribs = original.attributes
+            newAttribs[SupportedAttributes.fontSize.rawValue] = normalizedFont
+            
+            return ContentElement(identifier: original.identifier, content: original.content, attributes: newAttribs)
+        })
         
-        // now we have content that needs to be in a container, and we know its properties.
-        // so we can generate a new snippet while adding those things to the CSS.
-                
-        // so we could go through and adjust the parsed font sizes and make them relative.
+
+        // now we have re-purposed content.  Now to generate some html and css from it, not forgetting to set the base-size.
+        
+        // this is where you return a new snippet
+        let alteredSnippet = self.generateSnippet(from: self.normalizedContentElements)
+        let alteredTemplate = self.templateWithInjectedCSS(data.template, with: self.normalizedContentElements)
+        
+        // also this is where you inject new CSS.
         
         // if you inject CSS into the template, make sure you also leave it for injecting more (i.e. __ADDITIONAL_CSS__ ).  It will get replaced with "" later.
         
-        // it would seem that for each element, it has a font-size, an alignment, and an attribute.  We can re-write that into a div with these properties
-        
-        
-        
-        #warning("Implement Me")
         guard self.xmlParser == nil else {
             fatalError("I thought the XMLParser would do it synchronously.")
         }
-        return altered
-    }
-    
-    private func extractFontSizesAndMakeRelative(data: ConversionData) -> ConversionData {
-        print(#function)
-        // read out all font sizes
-        // weird logic here, but look at various sizes, and choose something in the middle, or the company name, or something, as the base font size, then make the others relative to that.
-        
-        #warning("Implement Me")
-        return data
-    }
-    
-    private func extractTemplateAttributesAndInjectValues(data: ConversionData) -> ConversionData {
-        
-        print(#function)
-        
-        // here you'll want to get the guest attribute inside the {{ }}
-        
-        // you'll want to get the value for that attribute in the dictionary (self.guest?), then replace
-        
-        // you'll want to re-create the snippet using either divs, or p's, giving an id to that div, and injecting css.
-        
-        
-        
-        #warning("Implement Me")
-        return data
+        return (snippet: alteredSnippet, template: alteredTemplate)
     }
     
     private func parser(with testSnippet: String) -> XMLParser {
+        // we have to embed the snippets in a master tag for the XMLParser to parse it all.
         let string = "<?xml version=\"1.0\"?><html>"+testSnippet+"</html>"
         guard let data = string.data(using: .utf8) else {
             fatalError("Really have no idea why here...")
@@ -138,6 +182,39 @@ class MateSnippetConverter: NSObject {
         let parser = XMLParser(data: data)
         parser.delegate = self
         return parser
+    }
+}
+
+extension MateSnippetConverter {
+    
+    fileprivate func generateSnippet(from contentElements: [ContentElement]) -> String {
+        var output = ""
+        for element in contentElements {
+            output += "<div id=\(element.identifier) class=\"label_element\">"
+            output += "\(element.content)"
+            output += "</div>"
+        }
+        return output
+    }
+    
+    fileprivate func templateWithInjectedCSS(_ baseTemplate: String, with contentElements: [ContentElement]) -> String {
+        var additionalCSS = ""
+        for element in contentElements {
+            let fontSize = element.attributes[SupportedAttributes.fontSize.rawValue] as! FontSize
+            let alignment = element.attributes[SupportedAttributes.textAlignment.rawValue] as! String
+            
+            let additionalElement = """
+            #\(element.identifier) { \n
+            \(fontSize.cssValue)\n
+            \(alignment)\n
+            }\n
+            """
+            additionalCSS += additionalElement
+        }
+        
+        additionalCSS += "\n\(HSHTMLTemplateTransformer.additionalCSSPlaceholder)"
+        
+        return baseTemplate.replacingOccurrences(of: HSHTMLTemplateTransformer.additionalCSSPlaceholder, with: additionalCSS)
     }
 }
 
@@ -170,6 +247,7 @@ extension MateSnippetConverter: XMLParserDelegate {
     func parser(_ parser: XMLParser, foundCharacters string: String) {
         print("\(#function)  \(string)")
         
+        // string will be for one element in the label.
         var content = string
         
         // once we've found characters, it means we've likely got all the attributes we need.
@@ -194,8 +272,23 @@ extension MateSnippetConverter: XMLParserDelegate {
         
         // content has now had its template placeholders replaced and is now 'real content'
         
-        // we could also be creating a new snippet with new css.
+        // now to get text alignment.  We deal in labels.  Align center is a reasonable default.
+        let alignment: String = self.extractCSSTextAlignment(from: self.styleAttributeStrings) ?? "text-align: center;"
+        
+        // now to get font size.  If unavailable, use base size.
+        let fontSize: FontSize = self.extractFontSize(from: self.styleAttributeStrings) ?? FontSize(value: 1.0, unit: .relative)
+        
+        let element = ContentElement(
+            identifier: "element_\(self.originalContentElements.count)",
+            content: content,
+            attributes: [SupportedAttributes.fontSize.rawValue: fontSize,
+                         SupportedAttributes.textAlignment.rawValue: alignment]
+        )
+        
+        self.originalContentElements.append(element)
     }
+    
+    
     
     func parser(_ parser: XMLParser, didEndElement elementName: String,
                 namespaceURI: String?,
@@ -210,18 +303,29 @@ extension MateSnippetConverter: XMLParserDelegate {
         self.templateValueReplacements = nil
     }
     
-    // MARK: - Helpers
-    func extractTextAlignment(from styleString: String) -> String? {
-        let searchString = "text-align:"
-        guard styleString.contains(searchString) else {
-            return nil
+    // MARK: - Parsing Helpers
+    private func extractCSSTextAlignment(from availableStyleStrings: [String]) -> String? {
+        for css in availableStyleStrings {
+            if css.contains(SupportedAttributes.textAlignment.rawValue) {
+                return "\(css);"
+            }
         }
+        return nil
+    }
+    
+    private func extractFontSize(from availableStyleStrings: [String]) -> FontSize? {
+        print(#function)
         
-        return styleString.replacingOccurrences(of: searchString, with: "").trimmingCharacters(in: .whitespaces)
+        for css in availableStyleStrings {
+            if css.contains(SupportedAttributes.fontSize.rawValue) {
+                return extractFontSize(from: css)
+            }
+        }
+        return nil
     }
     
     func extractFontSize(from styleString: String) -> FontSize? {
-        let searchString = "font-size:"
+        let searchString = SupportedAttributes.fontSize.rawValue
         guard styleString.contains(searchString) else {
             return nil
         }

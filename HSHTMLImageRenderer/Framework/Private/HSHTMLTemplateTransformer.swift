@@ -35,6 +35,8 @@ public struct TemplateAttributes {
 
 public class HSHTMLTemplateTransformer {
     
+    public static let additionalCSSPlaceholder = "__ADDITIONAL_CSS__" // this will be in the default_template.html
+    
     public enum TemplateError: Error {
         /// happens if you haven't included all the required attributes to render the HTML properly
         case invalidTemplate
@@ -81,7 +83,7 @@ public class HSHTMLTemplateTransformer {
         }
         
         // if this hasn't been removed, it needs to be!
-        transformedTemplate = transformedTemplate.replacingOccurrences(of: "__ADDITIONAL_CSS__", with: "")
+        transformedTemplate = transformedTemplate.replacingOccurrences(of: HSHTMLTemplateTransformer.additionalCSSPlaceholder, with: "")
         
         return try self.substitute(content: transformedSnippet, into: transformedTemplate, htmlAttributes: attributes)
     }

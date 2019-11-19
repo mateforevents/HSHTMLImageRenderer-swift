@@ -49,7 +49,7 @@ class ViewController: UIViewController {
         }
         
         let renderer = HSHTMLImageRenderer.sharedRenderer(in: window)
-        let snippetTransformer = MateSnippetConverter()
+        let snippetTransformer = MateSnippetConverter(targetOutputWidth: Float(targetWidth))
         
         let testReplacements = snippetReplacements
         
