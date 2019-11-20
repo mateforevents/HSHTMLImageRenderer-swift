@@ -60,13 +60,11 @@ class ViewController: UIViewController {
         }
         
         renderer.renderHTML(testSnippet,
-                            identifier: "Test",
-                            intent: .standard,
-                            attributes: [
-                                TemplateAttributes.Key.fontSize: baseFontSize,
-                                TemplateAttributes.Key.targetWidth: targetWidth/*,
-                                TemplateAttributes.Key.targetHeight : targetHeight*/
-                            ],
+                            jobIdentifier: "Test",
+                            targetWidth: Float(targetWidth),
+                            targetHeight: nil,
+                            templateIdentifier: HSHTMLTemplateTransformer.defaultTemplateIdentifier,
+                            attributes: [TemplateAttributes.Key.fontSize: baseFontSize],
                             ignoreCache: false,
                             cacheResult: true) { [weak self] (identifier, image, wasCached, error) in
                                 
@@ -98,23 +96,26 @@ class ViewController: UIViewController {
         
         let targetWidth = self.imageView.bounds.size.width
         let newAttributes: [String : Any] = [
-            TemplateAttributes.Key.targetWidth: targetWidth,
             TemplateAttributes.Key.font: UIFont(name: "Helvetica", size: 7)!
         ]
         
-        HSHTMLImageRenderer.shared.renderHTML(testSnippet,
-                                              identifier: "Test",
-                                              intent: .standard,
-                                              attributes: newAttributes,
-                                              ignoreCache: true, /* ignore the cache because attribs have changed. */
-                                              cacheResult: true) { [weak self] (_, image, wasCached, error) in
-                                                if let e = error {
-                                                    print("Rendering error: \(e.localizedDescription)")
-                                                } else {
-                                                    print("Finished!  Was Cached \(wasCached.stringValue)")
-                                                }
-                                                
-                                                self?.imageView.image = image
+        let renderer = HSHTMLImageRenderer.shared
+        renderer.renderHTML(testSnippet,
+                            jobIdentifier: "Test",
+                            targetWidth: Float(targetWidth),
+                            targetHeight: nil,
+                            templateIdentifier: HSHTMLTemplateTransformer.defaultTemplateIdentifier,
+                            attributes: newAttributes,
+                            ignoreCache: true,
+                            cacheResult: false) { [weak self] (identifier, image, wasCached, error) in
+                                
+                                if let e = error {
+                                    print("Rendering error: \(e.localizedDescription)")
+                                } else {
+                                    print("Finished!  Was Cached \(wasCached.stringValue)")
+                                }
+                                
+                                self?.imageView.image = image
         }
     }
 }

@@ -9,27 +9,23 @@
 import UIKit
 import WebKit
 
-public typealias HSHTMLImageRendererCompletionBlock = (_ identifier: String, _ result: UIImage?, _ wasCached: Bool, _ error: Error?) -> Void
+public typealias HSHTMLImageRendererCompletionBlock = (_ jobIdentifier: String, _ result: UIImage?, _ wasCached: Bool, _ error: Error?) -> Void
 
 public class HSHTMLImageRenderer: NSObject {
-    
-    public enum RenderingIntent: Int {
-        case standard = 0
-    }
     
     /// will write the template-converted files to disk, so that you can inspect and debug them in a browser, just to be sure.  Intended for the iOS Simulator.
     static let writeHTMLToDisk = false
     
-    /// Make sure you call renderer(in window) first!
+    /// Make sure you call `.sharedRenderer(in: window)` first!
     private static var _shared: HSHTMLImageRenderer?
-    
-    public static var shared: HSHTMLImageRenderer! {
+    public static var shared: HSHTMLImageRenderer {
         return _shared!
     }
     
     let renderingWindow: UIWindow
     private(set) var operationsRequested: Int = 0
     
+    /// basically when you set up a renderer, you'll want to initialize it with this method, and likely right after that register templates, set snippet converters, etc.
     public static func sharedRenderer(in window: UIWindow) -> HSHTMLImageRenderer {
         guard _shared == nil else {
             return _shared!
@@ -92,6 +88,7 @@ public class HSHTMLImageRenderer: NSObject {
         return NSCache<NSString, UIImage>()
     }()
     
+    /// You are given access to this property so you can optionally set its `snippetTransformer` property.
     public let templateTransformer = HSHTMLTemplateTransformer()
     
     public var isSuspended: Bool {
@@ -103,11 +100,24 @@ public class HSHTMLImageRenderer: NSObject {
         }
     }
     
-    /// completion is called immediately if the image is found in the cache.
-    /// `identifier` is ultimately a cache key.
+    /**
+            The principle method you use when rendering HTML snippets.
+     - Parameter htmlString: the snippet of HTML you want to inject into your template and have rendered to an image
+     - Parameter jobIdentifier: Consider this otherwise a cache identifier.  If you make a subsequent call to this `renderHTML(...)` method, `jobIdentifier` is used to retrieve any previously rendered version of `htmlString`
+     - Parameter targetWidth: because your content is dynamic, it also needs to be constrained by width.  You need to provide this here.  If you provide a targetWidth or targetHeight in the `attributes` argument, they will be overwritten by this value.
+     - Parameter targetHeight: (Optional) if you provide a `targetHeight`, the resulting rendered image will be padded top and bottom to fit that height, or scaled to fit into the height, so that the final image that is given in the `completion` block will have the dimensions `targetWidth` x `targetHeight`
+     - Parameter templateIdentifier: The name of the template you want to use to render your `htmlString`.  You should first call `registerTemplate:identifier:` before you commit any rendering job, so that the `HSHTMLImageRenderer`has your template available.  Note, by default, a template is provided under the identifier `HSHTMLTemplateTransformer.defaultTemplateIdentifier`.  NOTE: If your template was not registered, then the `completion` block will return with an error.
+     - Parameter attributes: This will most likely be a dictionary of `TemplateAttributes.Key` raw values.  If you customize your template, you will have to look through this source code to see how these attributes are substituted into your template.
+     - Parameter ignoreCache: If you set this argument to `true`, it will guarantee that the `htmlString` is rendered and not retrieved from the cache.
+     - Parameter cacheResult: If you set this argument to `true`, if your `htmlString` was rendered and not retrieved from the cache, this will place the result in the cache using the `jobIdentifier` as the cache key.
+     - Parameter completion: The result of the call.  It provides the `jobIdentifier` to provide context.  If it succeeded, it will provide the image result, whether that came from the cache, or otherwise it will provide an error.  `error` will be defined if you try to render with a `templateIdentifier` that has not been registered via `registerTemplate:identifier:`.  `completion` is called immediately if the image is found in the cache.
+     */
+  
     public func renderHTML(_ htmlString: String,
-                           identifier: String,
-                           intent: RenderingIntent = .standard,
+                           jobIdentifier: String,
+                           targetWidth: Float,
+                           targetHeight: Float? = nil,
+                           templateIdentifier: String = HSHTMLTemplateTransformer.defaultTemplateIdentifier,
                            attributes: [String: Any] = TemplateAttributes.defaultTemplateAttributes,
                            ignoreCache: Bool = false,
                            cacheResult: Bool = true,
@@ -115,16 +125,21 @@ public class HSHTMLImageRenderer: NSObject {
         
         // first check if we've rendered this already
         if !ignoreCache {
-            if let existingImage = self.imageCache.object(forKey: identifier as NSString) {
-                completion(identifier, existingImage, true, nil)
+            if let existingImage = self.imageCache.object(forKey: jobIdentifier as NSString) {
+                completion(jobIdentifier, existingImage, true, nil)
                 return
             }
         }
         
+        // have to insert/override targetWidth/Height
+        var updatedAttributes = attributes
+        updatedAttributes[TemplateAttributes.Key.targetWidth] = targetWidth
+        updatedAttributes[TemplateAttributes.Key.targetHeight] = targetHeight
+        
         let renderOp = HSHTMLImageRenderingOperation(html: htmlString,
-                                                     identifier: identifier,
-                                                     intent: intent,
-                                                     attributes: attributes,
+                                                     jobIdentifier: jobIdentifier,
+                                                     templateIdentifier: templateIdentifier,
+                                                     attributes: updatedAttributes,
                                                      renderer: self,
                                                      ignoreCache: ignoreCache,
                                                      shouldCache: cacheResult,
@@ -132,7 +147,7 @@ public class HSHTMLImageRenderer: NSObject {
             { (success, userInfo, error) in
                 
                 if let error = error {
-                    completion(identifier, nil, false, error)
+                    completion(jobIdentifier, nil, false, error)
                     return
                 }
                 
@@ -212,23 +227,25 @@ extension HSHTMLImageRenderer: WKNavigationDelegate {
             return
         }
 
-        // this is where you can evaluate the content height, and re-size as necessary.
-        let javascriptHeightString = "" +
-            "var body = document.body;" +
-            "var html = document.documentElement;" +
-            "Math.max(" +
-            "   body.scrollHeight," +
-            "   body.offsetHeight," +
-            "   html.clientHeight," +
-            "   html.offsetHeight" +
-        ");"  // formerly "document.height"
+//        // this is where you can evaluate the content height, and re-size as necessary.
+//        let javascriptHeightString = "" +
+//            "var body = document.body;" +
+//            "var html = document.documentElement;" +
+//            "Math.max(" +
+//            "   body.scrollHeight," +
+//            "   body.offsetHeight," +
+//            "   html.clientHeight," +
+//            "   html.offsetHeight" +
+//        ");"  // formerly "document.height"
+//
+//        webView.evaluateJavaScript(javascriptHeightString) { (result, error) in
+//            guard let _ = result as? CGFloat else {
+//                fatalError("DID NOT EXPECT THIS.  Failing")
+//            }
+//            self.notifyOperationThatWebviewCompletedLoading(self.webView)
+//        }
         
-        webView.evaluateJavaScript(javascriptHeightString) { (result, error) in
-            guard let _ = result as? CGFloat else {
-                fatalError("DID NOT EXPECT THIS.  Failing")
-            }
-            self.notifyOperationThatWebviewCompletedLoading(self.webView)
-        }
+        self.notifyOperationThatWebviewCompletedLoading(webView)
     }
     
     private func notifyOperationThatWebviewCompletedLoading(_ webView: HSRenderingWebView) {

@@ -23,9 +23,9 @@ class HSHTMLImageRenderingOperation: HSAsyncOperation {
     }
     
     let htmlToLoad: String
-    let intent: HSHTMLImageRenderer.RenderingIntent
+    let jobIdentifier: String
+    let templateIdentifier: String
     let attributes: [String: Any]
-    let identifier: String
     let ignoreCache: Bool
     let shouldCache: Bool
     
@@ -38,26 +38,26 @@ class HSHTMLImageRenderingOperation: HSAsyncOperation {
     var contentSize: CGSize = .zero
     
     init(html: String,
-         identifier: String,
-         intent: HSHTMLImageRenderer.RenderingIntent,
+         jobIdentifier: String,
+         templateIdentifier: String,
          attributes: [String: Any],
          renderer: HSHTMLImageRenderer,
          ignoreCache: Bool,
          shouldCache: Bool,
          completion: HSOperationCompletionBlock?) {
         
-        self.identifier = identifier
         self.htmlToLoad = html
-        self.intent = intent
+        self.jobIdentifier = jobIdentifier
+        self.templateIdentifier = templateIdentifier
         self.attributes = attributes
         self.renderer = renderer
         self.ignoreCache = ignoreCache
         self.shouldCache = shouldCache
         
-        self.userInfo = [UserInfoKey.identifier: identifier]
+        self.userInfo = [UserInfoKey.identifier: jobIdentifier]
         
         super.init(completion: completion)
-        self.name = identifier
+        self.name = jobIdentifier
     }
     
     override func work() {
@@ -66,7 +66,7 @@ class HSHTMLImageRenderingOperation: HSAsyncOperation {
         // figure out if we can used a cached copy
         if !ignoreCache,
             let cache = self.renderer?.imageCache,
-            let image = cache.object(forKey: self.identifier as NSString) {
+            let image = cache.object(forKey: self.jobIdentifier as NSString) {
             
             self.userInfo[UserInfoKey.image] = image
             self.userInfo[UserInfoKey.wasCached] = true
@@ -84,16 +84,12 @@ class HSHTMLImageRenderingOperation: HSAsyncOperation {
             return
         }
         
-        if self.intent == .standard {
-            let template = transformer.defaultTemplate()
-            transformer.registerTemplate(template, identifier: "standard")
-        }
         
         do {
             
             let modifiedString: String = try transformer.presentationHTML(with: self.htmlToLoad,
-                                                                     usingTemplateWithIdentifier: "standard",
-                                                                     attributes: self.attributes)
+                                                                          usingTemplateWithIdentifier: self.templateIdentifier,
+                                                                          attributes: self.attributes)
             
             
             let targetWidth = self.attributes[TemplateAttributes.Key.targetWidth] as? CGFloat ?? TemplateAttributes.defaultTemplateAttributes[TemplateAttributes.Key.targetWidth] as! CGFloat
@@ -140,7 +136,7 @@ class HSHTMLImageRenderingOperation: HSAsyncOperation {
             self.userInfo[UserInfoKey.image] = image
             
             if self.shouldCache, let image = image {
-                self.renderer?.imageCache.setObject(image, forKey: self.identifier as NSString)
+                self.renderer?.imageCache.setObject(image, forKey: self.jobIdentifier as NSString)
             }
             
             // because we rendered it, it wasn't cached

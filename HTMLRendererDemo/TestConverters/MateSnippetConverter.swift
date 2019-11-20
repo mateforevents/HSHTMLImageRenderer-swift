@@ -61,18 +61,12 @@ class MateSnippetConverter: NSObject {
         case unexpected
     }
     
-    public var guest: Guest?  // user info, etc.
-    public var event: Event?  // QR Code info, data, etc.
-    
     // these three shall always be either all defined or all undefined
     internal var xmlParser: XMLParser?
     internal var regex: NSRegularExpression?
     internal var templateValueReplacements: [String: String]?
     
     let targetOutputWidth: Float
-    
-    var transformedSnippet: String = ""
-    var cssToInject: String = ""
     
     // parsing variables
     private var elementName: String?
@@ -132,7 +126,7 @@ class MateSnippetConverter: NSObject {
         
         self.originalContentElements = []
         
-        let success = parser.parse()
+        let _ = parser.parse()
     
         // self.originalContentElements should now be parsed.
         
@@ -214,9 +208,9 @@ extension MateSnippetConverter {
             additionalCSS += additionalElement
         }
         
-        additionalCSS += "\n\(HSHTMLTemplateTransformer.additionalCSSPlaceholder)"
+        additionalCSS += "\n\(TemplateAttributes.Key.additionalCSS)"
         
-        return baseTemplate.replacingOccurrences(of: HSHTMLTemplateTransformer.additionalCSSPlaceholder, with: additionalCSS)
+        return baseTemplate.replacingOccurrences(of: TemplateAttributes.Key.additionalCSS, with: additionalCSS)
     }
 }
 
@@ -224,8 +218,8 @@ extension MateSnippetConverter: XMLParserDelegate {
     
     func parserDidStartDocument(_ parser: XMLParser) {
         print(#function)
-        self.transformedSnippet = ""
-        self.cssToInject = ""
+        self.originalContentElements = []
+        self.styleAttributeStrings = []
     }
     
     func parser(_ parser: XMLParser, didStartElement elementName: String,

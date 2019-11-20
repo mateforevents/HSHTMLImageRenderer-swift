@@ -20,6 +20,7 @@ public struct TemplateAttributes {
         public static let bodyText = "__HTML_BODY__"
         public static let fontFamily = "__FONT_FAMILY__"
         public static let font = "TemplateFont"
+        public static let additionalCSS = "__ADDITIONAL_CSS__"  // this will be in the default_template.html
     }
     
     public static var defaultTemplateAttributes: [String: Any] = {
@@ -33,13 +34,15 @@ public struct TemplateAttributes {
     }()
 }
 
-public class HSHTMLTemplateTransformer {
+public class HSHTMLTemplateTransformer: NSObject {
     
-    public static let additionalCSSPlaceholder = "__ADDITIONAL_CSS__" // this will be in the default_template.html
+    public static let defaultTemplateIdentifier = "++HSHTMLImageRendererDefaultTemplate++"
     
     public enum TemplateError: Error {
         /// happens if you haven't included all the required attributes to render the HTML properly
         case invalidTemplate
+        /// if you try to render using a templateIdentifier you haven't registered.
+        case unknownTemplateIdentifier
     }
     
     fileprivate var templateRegistry: [String: String] = [:]
@@ -47,29 +50,36 @@ public class HSHTMLTemplateTransformer {
     // incoming snippet, outgoing snippet
     public var snippetTransformer: ((_ snippet: String, _ template: String) -> (transformedSnippet: String, transformedTemplate: String))? = nil
     
-    public func defaultTemplate() -> String {
+    internal static func defaultTemplate() -> String {
         let template = try! String(contentsOf: self.defaultTemplateURL(), encoding: .utf8)
         return template
     }
     
-    public func defaultTemplateURL() -> URL {
+    internal static func defaultTemplateURL() -> URL {
         guard let url = Bundle(for: HSHTMLImageRenderer.self).url(forResource: "default_template.html", withExtension: nil) else {
             fatalError("Handle this better.  Resource couldn't be located.")
         }
         return url
     }
     
-    public func registerTemplate(_ template: String, identifier: String) {
+    override init() {
+        super.init()
+        let template = HSHTMLTemplateTransformer.defaultTemplate()
+        self.registerTemplate(template, identifier: HSHTMLTemplateTransformer.defaultTemplateIdentifier)
+    }
+    
+    
+    internal func registerTemplate(_ template: String, identifier: String) {
         templateRegistry[identifier] = template
     }
     
     /// this method aims to substitute the serverSnippet into the template, while also setting other properties of the template.
-    func presentationHTML(with serverSnippet: String,
-                          usingTemplateWithIdentifier identifier: String,
-                          attributes: [String: Any]) throws -> String {
+    internal func presentationHTML(with serverSnippet: String,
+                                   usingTemplateWithIdentifier templateIdentifier: String,
+                                   attributes: [String: Any]) throws -> String {
         
-        guard let template = templateRegistry[identifier] else {
-            fatalError("You need to register your template before you can render with it.  Before calling this method, make sure you load and set a template using registerTemplate:identifier:")
+        guard let template = templateRegistry[templateIdentifier] else {
+            throw TemplateError.unknownTemplateIdentifier
         }
         
         var transformedSnippet = serverSnippet
@@ -82,8 +92,8 @@ public class HSHTMLTemplateTransformer {
             transformedTemplate = transformed.transformedTemplate
         }
         
-        // if this hasn't been removed, it needs to be!
-        transformedTemplate = transformedTemplate.replacingOccurrences(of: HSHTMLTemplateTransformer.additionalCSSPlaceholder, with: "")
+        // if you haven't removed this template variable, it needs to be!
+        transformedTemplate = transformedTemplate.replacingOccurrences(of: TemplateAttributes.Key.additionalCSS, with: "")
         
         return try self.substitute(content: transformedSnippet, into: transformedTemplate, htmlAttributes: attributes)
     }
@@ -111,11 +121,19 @@ public class HSHTMLTemplateTransformer {
                 return false
             }
         }
+        
+        // check for render_container
+        let searchString = "<div id=\"render_container\""
+        guard let _ = template.range(of: searchString) else {
+            print("The Template is supposed to have a div with id = \"render_container\", but it wasn't found.")
+            return false
+        }
+        
         return true
     }
     
     func validateDefaultTemplate() -> Bool {
-        let template = self.defaultTemplate()
+        let template = HSHTMLTemplateTransformer.defaultTemplate()
         return validateTemplate(template, attributes: [])
     }
     
@@ -141,7 +159,7 @@ public class HSHTMLTemplateTransformer {
             let textColor = workingAttributes[TemplateAttributes.Key.textColor] as? UIColor,
             let backgroundColor = workingAttributes[TemplateAttributes.Key.backgroundColor] as? UIColor,
             let font = workingAttributes[TemplateAttributes.Key.font] as? UIFont,
-            let targetWidth = workingAttributes[TemplateAttributes.Key.targetWidth] as? CGFloat
+            let targetWidth = workingAttributes[TemplateAttributes.Key.targetWidth] as? Float
         else {
             fatalError("You are missing some fundamental drawing attributes.  If you provided your own attributes, did you make sure to merge them with HSHTMLTemplateHelper.defaultTemplateAttributes ?")
         }
