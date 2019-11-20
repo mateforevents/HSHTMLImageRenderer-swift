@@ -41,7 +41,7 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        let targetWidth: CGFloat = 200
+        let targetWidth: Float = 200
         //let targetHeight: CGFloat = 70
         
         guard let window = self.view.window else {
@@ -49,8 +49,8 @@ class ViewController: UIViewController {
         }
         
         let renderer = HSHTMLImageRenderer.sharedRenderer(in: window)
-        let snippetTransformer = MateSnippetConverter(targetOutputWidth: Float(targetWidth))
-        let baseFontSize = MateSnippetConverter.baseFontSize(for: Float(targetWidth))
+        let snippetTransformer = MateSnippetConverter(targetOutputWidth: targetWidth)
+        let baseFontSize = MateSnippetConverter.baseFontSize(for: targetWidth)
         
         let testReplacements = snippetReplacements
         
@@ -61,7 +61,7 @@ class ViewController: UIViewController {
         
         renderer.renderHTML(testSnippet,
                             jobIdentifier: "Test",
-                            targetWidth: Float(targetWidth),
+                            targetWidth: targetWidth,
                             targetHeight: nil,
                             templateIdentifier: HSHTMLTemplateTransformer.defaultTemplateIdentifier,
                             attributes: [TemplateAttributes.Key.fontSize: baseFontSize],

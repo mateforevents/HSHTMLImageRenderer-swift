@@ -11,25 +11,25 @@ import UIKit
 public struct TemplateAttributes {
     
     public struct Key {
-        public static let lineHeight = "__LINE_HEIGHT__"
-        public static let fontSize = "__FONT_SIZE__"
-        public static let textColor = "__TEXT_COLOR__"
-        public static let backgroundColor = "__BACKGROUND_COLOR__"
-        public static let targetWidth = "__OUTPUT_WIDTH__"
-        public static let targetHeight = "__OUTPUT_HEIGHT__"
-        public static let bodyText = "__HTML_BODY__"
-        public static let fontFamily = "__FONT_FAMILY__"
+        public static let lineHeight = "__LINE_HEIGHT__" // value should be a Float
+        public static let fontSize = "__FONT_SIZE__"  // value should be a Float
+        public static let textColor = "__TEXT_COLOR__"  // value should be a UIColor
+        public static let backgroundColor = "__BACKGROUND_COLOR__"  // value should be a UIColor
+        public static let targetWidth = "__OUTPUT_WIDTH__"  // value should be a Float
+        public static let targetHeight = "__OUTPUT_HEIGHT__"  // value should be a Float
+        public static let bodyText = "__HTML_BODY__"  // value should be a String
+        public static let fontFamily = "__FONT_FAMILY__"  // value should be a String
         public static let font = "TemplateFont"
         public static let additionalCSS = "__ADDITIONAL_CSS__"  // this will be in the default_template.html
     }
     
     public static var defaultTemplateAttributes: [String: Any] = {
        return [
-        TemplateAttributes.Key.lineHeight: CGFloat(1.0),
+        TemplateAttributes.Key.lineHeight: Float(1.0),
         TemplateAttributes.Key.font: UIFont.systemFont(ofSize: 16),
         TemplateAttributes.Key.textColor: UIColor.black,
         TemplateAttributes.Key.backgroundColor: UIColor.white,
-        TemplateAttributes.Key.targetWidth: CGFloat(300)
+        TemplateAttributes.Key.targetWidth: Float(300)
         ]
     }()
 }
@@ -155,7 +155,7 @@ public class HSHTMLTemplateTransformer: NSObject {
             return overriddenAttrib
         }
         
-        guard let lineHeight = workingAttributes[TemplateAttributes.Key.lineHeight] as? CGFloat,
+        guard let lineHeight = workingAttributes[TemplateAttributes.Key.lineHeight] as? Float,
             let textColor = workingAttributes[TemplateAttributes.Key.textColor] as? UIColor,
             let backgroundColor = workingAttributes[TemplateAttributes.Key.backgroundColor] as? UIColor,
             let font = workingAttributes[TemplateAttributes.Key.font] as? UIFont,
@@ -195,7 +195,7 @@ public class HSHTMLTemplateTransformer: NSObject {
                                                                        with: "\(Int(targetWidth))")
         
         var targetHeightString = ""
-        if let targetHeight = workingAttributes[TemplateAttributes.Key.targetHeight] as? CGFloat {
+        if let targetHeight = workingAttributes[TemplateAttributes.Key.targetHeight] as? Float {
             targetHeightString = "min-height: \(Int(targetHeight))px"
         } else {
             targetHeightString = "height: 100%"

@@ -13,4 +13,4 @@ example raw server snippet (escaped):
     - Prove that relative font sizes are working (inspect final HTML to be rendered)
     - Append QR Code
     - Add Company Logo / arbitrary image support.
-    
+    - if you provide a value for TemplateAttributes.Key.fontSize directly, it will be ignored.  use font instead.

@@ -92,9 +92,9 @@ class HSHTMLImageRenderingOperation: HSAsyncOperation {
                                                                           attributes: self.attributes)
             
             
-            let targetWidth = self.attributes[TemplateAttributes.Key.targetWidth] as? CGFloat ?? TemplateAttributes.defaultTemplateAttributes[TemplateAttributes.Key.targetWidth] as! CGFloat
+            let targetWidth = self.attributes[TemplateAttributes.Key.targetWidth] as? Float ?? TemplateAttributes.defaultTemplateAttributes[TemplateAttributes.Key.targetWidth] as! Float
             
-            let targetHeight = self.attributes[TemplateAttributes.Key.targetHeight] as? CGFloat ?? UIScreen.main.bounds.height
+            let targetHeight = self.attributes[TemplateAttributes.Key.targetHeight] as? Float ?? Float(UIScreen.main.bounds.height)
             
              // now we do substitutions....
              
@@ -117,8 +117,8 @@ class HSHTMLImageRenderingOperation: HSAsyncOperation {
              DispatchQueue.main.async { [weak self] in
                 guard let `self` = self else { return }
              
-                self.renderer?.webView.width = targetWidth
-                self.renderer?.webView.height = targetHeight
+                self.renderer?.webView.width = CGFloat(targetWidth)
+                self.renderer?.webView.height = CGFloat(targetHeight)
                 self.renderer?.webView.operation = self
                 self.renderer?.webView.loadHTMLString(modifiedString, baseURL: baseURL)
             }
