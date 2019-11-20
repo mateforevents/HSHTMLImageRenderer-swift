@@ -147,7 +147,13 @@ public class HSHTMLTemplateTransformer {
         }
         
         // derived attributes
-        let family = font.familyName
+        var family = font.familyName
+        
+        // have to hack a fix here.
+        if family == ".AppleSystemUIFont" {
+            family = "Helvetica"
+        }
+        
         let textColorHex = textColor.hexString(includeHashCharacter: true)
         let bgColorHex = backgroundColor.hexString(includeHashCharacter: true)
         

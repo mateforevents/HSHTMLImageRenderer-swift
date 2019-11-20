@@ -50,6 +50,7 @@ class ViewController: UIViewController {
         
         let renderer = HSHTMLImageRenderer.sharedRenderer(in: window)
         let snippetTransformer = MateSnippetConverter(targetOutputWidth: Float(targetWidth))
+        let baseFontSize = MateSnippetConverter.baseFontSize(for: Float(targetWidth))
         
         let testReplacements = snippetReplacements
         
@@ -62,7 +63,8 @@ class ViewController: UIViewController {
                             identifier: "Test",
                             intent: .standard,
                             attributes: [
-                                TemplateAttributes.Key.targetWidth : targetWidth/*,
+                                TemplateAttributes.Key.fontSize: baseFontSize,
+                                TemplateAttributes.Key.targetWidth: targetWidth/*,
                                 TemplateAttributes.Key.targetHeight : targetHeight*/
                             ],
                             ignoreCache: false,

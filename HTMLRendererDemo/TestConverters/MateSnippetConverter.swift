@@ -102,8 +102,10 @@ class MateSnippetConverter: NSObject {
         
         // key is target width, value is base size.  Should be in increasing order.
         let nominalSizes: [(Float, Float)] = [
-            (300, 18),
-            (500, 22)
+            (100, 9),
+            (200, 10),
+            (300, 14),
+            (500, 18)
         ]
         var chosenPairing = nominalSizes.first!
         for pairing in nominalSizes {
@@ -190,22 +192,22 @@ extension MateSnippetConverter {
     fileprivate func generateSnippet(from contentElements: [ContentElement]) -> String {
         var output = ""
         for element in contentElements {
-            output += "<div id=\(element.identifier) class=\"label_element\">"
+            output += "<div id=\"\(element.identifier)\" class=\"label_element\">"
             output += "\(element.content)"
-            output += "</div>"
+            output += "</div>\n"
         }
         return output
     }
     
     fileprivate func templateWithInjectedCSS(_ baseTemplate: String, with contentElements: [ContentElement]) -> String {
-        var additionalCSS = ""
+        var additionalCSS = "\n"
         for element in contentElements {
             let fontSize = element.attributes[SupportedAttributes.fontSize.rawValue] as! FontSize
             let alignment = element.attributes[SupportedAttributes.textAlignment.rawValue] as! String
             
             let additionalElement = """
             #\(element.identifier) { \n
-            \(fontSize.cssValue)\n
+            font-size: \(fontSize.cssValue)\n
             \(alignment)\n
             }\n
             """

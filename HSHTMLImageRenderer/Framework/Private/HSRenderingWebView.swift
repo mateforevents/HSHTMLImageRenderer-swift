@@ -85,11 +85,7 @@ var values = [];
 values = values.concat(rect.left, rect.top, rect.width, rect.height);
 values;
 """
-    //let jsHeight = "document.documentElement.clientHeight;"
-//    let jsHeight = """
-//var container = document.getElementById('render_container');
-//container.offsetHeight;
-//"""
+
     let jsHeight = "document.body.scrollHeight;"
     
     func getContainerRect(completion: @escaping ((_ jsRect: CGRect, _ wkRect: CGRect, _ error: Error?) -> Void)) {
