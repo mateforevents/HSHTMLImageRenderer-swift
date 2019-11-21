@@ -19,4 +19,14 @@ There are a few tricks:
     
     
         
+Cocoapods - Podspecs
+---------
+
+Basically can use almost any guide for setting up your own private pod repo, then creating podspecs.  You may need to add the HSPodspecs to your local cocoapods installation.
     
+New version?
+    ->  Update that version in the podspec and in the framework version Info.plist
+    -> Verify it's ok:  (Terminal) > pod spec lint HSHTMLImageRenderer.podspec
+    -> Push to spec repo: (Terminal) -> pod repo push HSPodspecs HSHTMLImageRenderer.podspec
+
+
