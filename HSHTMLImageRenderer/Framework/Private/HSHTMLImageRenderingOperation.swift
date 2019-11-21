@@ -24,7 +24,7 @@ class HSHTMLImageRenderingOperation: HSAsyncOperation {
     
     let htmlToLoad: String
     let jobIdentifier: String
-    let templateIdentifier: String
+    let templateIdentifier: String?
     let attributes: [String: Any]
     let ignoreCache: Bool
     let shouldCache: Bool
@@ -39,7 +39,7 @@ class HSHTMLImageRenderingOperation: HSAsyncOperation {
     
     init(html: String,
          jobIdentifier: String,
-         templateIdentifier: String,
+         templateIdentifier: String?,
          attributes: [String: Any],
          renderer: HSHTMLImageRenderer,
          ignoreCache: Bool,
@@ -87,9 +87,14 @@ class HSHTMLImageRenderingOperation: HSAsyncOperation {
         
         do {
             
-            let modifiedString: String = try transformer.presentationHTML(with: self.htmlToLoad,
-                                                                          usingTemplateWithIdentifier: self.templateIdentifier,
-                                                                          attributes: self.attributes)
+            var modifiedString: String = self.htmlToLoad
+            
+            if let templateIdentifier = self.templateIdentifier {
+                modifiedString = try transformer.presentationHTML(with: self.htmlToLoad,
+                                                                  usingTemplateWithIdentifier: templateIdentifier,
+                                                                  attributes: self.attributes)
+                
+            }
             
             
             let targetWidth = self.attributes[TemplateAttributes.Key.targetWidth] as? Float ?? TemplateAttributes.defaultTemplateAttributes[TemplateAttributes.Key.targetWidth] as! Float

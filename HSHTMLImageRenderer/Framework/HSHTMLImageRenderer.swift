@@ -106,7 +106,7 @@ public class HSHTMLImageRenderer: NSObject {
      - Parameter jobIdentifier: Consider this otherwise a cache identifier.  If you make a subsequent call to this `renderHTML(...)` method, `jobIdentifier` is used to retrieve any previously rendered version of `htmlString`
      - Parameter targetWidth: because your content is dynamic, it also needs to be constrained by width.  You need to provide this here.  If you provide a targetWidth or targetHeight in the `attributes` argument, they will be overwritten by this value.
      - Parameter targetHeight: (Optional) if you provide a `targetHeight`, the resulting rendered image will be padded top and bottom to fit that height, or scaled to fit into the height, so that the final image that is given in the `completion` block will have the dimensions `targetWidth` x `targetHeight`
-     - Parameter templateIdentifier: The name of the template you want to use to render your `htmlString`.  You should first call `registerTemplate:identifier:` before you commit any rendering job, so that the `HSHTMLImageRenderer`has your template available.  Note, by default, a template is provided under the identifier `HSHTMLTemplateTransformer.defaultTemplateIdentifier`.  NOTE: If your template was not registered, then the `completion` block will return with an error.
+     - Parameter templateIdentifier: The name of the template you want to use to render your `htmlString`.  If you do not provide a `templateIdentifier`, the `HSHTMLImageRenderer` will just pass in the htmlString to the rendering WKWebView.  Note, working without templates has not been thoroughly tested yet. (21.11.2019).  You should first call `registerTemplate:identifier:` before you commit any rendering job, so that the `HSHTMLImageRenderer`has your template available.  Note, by default, a template is provided under the identifier `HSHTMLTemplateTransformer.defaultTemplateIdentifier`.  NOTE: If your template was not registered, then the `completion` block will return with an error.
      - Parameter attributes: This will most likely be a dictionary of `TemplateAttributes.Key` raw values.  If you customize your template, you will have to look through this source code to see how these attributes are substituted into your template.
      - Parameter ignoreCache: If you set this argument to `true`, it will guarantee that the `htmlString` is rendered and not retrieved from the cache.
      - Parameter cacheResult: If you set this argument to `true`, if your `htmlString` was rendered and not retrieved from the cache, this will place the result in the cache using the `jobIdentifier` as the cache key.
@@ -117,7 +117,7 @@ public class HSHTMLImageRenderer: NSObject {
                            jobIdentifier: String,
                            targetWidth: Float,
                            targetHeight: Float? = nil,
-                           templateIdentifier: String = HSHTMLTemplateTransformer.defaultTemplateIdentifier,
+                           templateIdentifier: String? = HSHTMLTemplateTransformer.defaultTemplateIdentifier,
                            attributes: [String: Any] = TemplateAttributes.defaultTemplateAttributes,
                            ignoreCache: Bool = false,
                            cacheResult: Bool = true,

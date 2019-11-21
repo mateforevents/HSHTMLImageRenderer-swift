@@ -14,3 +14,6 @@ example raw server snippet (escaped):
     - Append QR Code
     - Add Company Logo / arbitrary image support.
     - if you provide a value for TemplateAttributes.Key.fontSize directly, it will be ignored.  use font instead.
+    - make sure it can render an image with a clear background. (There is the use case where you print black or white on top of a pre-printed background that's already on a plastic card.)
+    
+    
