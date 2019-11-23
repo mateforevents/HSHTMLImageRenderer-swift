@@ -67,7 +67,12 @@ public class HSHTMLImageRenderer: NSObject {
         let screenSize = self.renderingWindow.bounds.size
         let webview = HSRenderingWebView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height))
         webview.translatesAutoresizingMaskIntoConstraints = false
-        webview.scrollView.contentInsetAdjustmentBehavior = .never
+        
+        if #available(iOS 11.0, *) {
+            webview.scrollView.contentInsetAdjustmentBehavior = .never
+        } else {
+            // Fallback on earlier versions
+        }
         webview.navigationDelegate = self
         webview.isOpaque = false
         webview.backgroundColor = .clear

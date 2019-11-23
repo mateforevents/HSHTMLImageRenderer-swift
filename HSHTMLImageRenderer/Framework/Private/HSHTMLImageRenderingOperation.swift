@@ -182,21 +182,55 @@ class HSHTMLImageRenderingOperation: HSAsyncOperation {
             fatalError("This has to be done on the main thread.")
         }
 
-        webView.getContainerRect { (jsRect, wkRect, error) in
+        webView.getContainerRect { [weak self] (jsRect, wkRect, error) in
             
             print("WebKitRect: \(wkRect), jsRect: \(jsRect)")
-            let config = WKSnapshotConfiguration()
-            config.rect = wkRect
-            if #available(iOS 13.0, *) {
-                config.afterScreenUpdates = true
+            
+            if #available(iOS 11.0, *) {
+                
+                let config = WKSnapshotConfiguration()
+                config.rect = wkRect
+                if #available(iOS 13.0, *) {
+                    config.afterScreenUpdates = true
+                } else {
+                    // Fallback on earlier versions
+                }
+                webView.takeSnapshot(with: config) { (image, error) in
+                 
+                    completion(image)
+                }
+                
             } else {
                 // Fallback on earlier versions
-            }
-            webView.takeSnapshot(with: config) { (image, error) in
-             
-                completion(image)
+                
+                if let image = self?.renderUsingLegacyMethod(wkRect.size, webView: webView) {
+                    completion(image)
+                } else {
+                    print("Could not render an image using the legacy method.  No idea why...")
+                    completion(nil)
+                }
             }
         }
+    }
+    
+    private func renderUsingLegacyMethod(_ targetSize: CGSize, webView: HSRenderingWebView) -> UIImage? {
+
+        #warning("Figure out if this image should be opaque or not!")
+
+        // adapted from this: http://atmarkplant.com/wkwebview-screenshots/
+        
+        UIGraphicsBeginImageContextWithOptions(targetSize, true, UIScreen.main.scale)
+        guard let ctx = UIGraphicsGetCurrentContext() else {
+            print("Could not get context to render WebView...")
+            return nil
+        }
+        let scale = targetSize.width / webView.layer.bounds.size.width
+        let transform = CGAffineTransform(scaleX: scale, y: scale)
+        ctx.concatenate(transform)
+        webView.layer.render(in: ctx)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image
     }
     
     override func finish() {

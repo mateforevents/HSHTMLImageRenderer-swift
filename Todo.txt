@@ -15,5 +15,6 @@ example raw server snippet (escaped):
     - Add Company Logo / arbitrary image support.
     - if you provide a value for TemplateAttributes.Key.fontSize directly, it will be ignored.  use font instead.
     - make sure it can render an image with a clear background. (There is the use case where you print black or white on top of a pre-printed background that's already on a plastic card.)
+    - Consider moving away from UIFont and deriving it via .family, since iOS does some weird shit to Helvetica.  Gives it a family name of .AppleSystemUIFont but also other strings, different in various iOS versions
     
     

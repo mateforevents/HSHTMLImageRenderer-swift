@@ -167,8 +167,8 @@ public class HSHTMLTemplateTransformer: NSObject {
         // derived attributes
         var family = font.familyName
         
-        // have to hack a fix here.
-        if family == ".AppleSystemUIFont" {
+        // have to hack a fix here because Apple somehow maps Helvetica into something else.
+        if family == ".AppleSystemUIFont" || family == ".SF UI Text" {
             family = "Helvetica"
         }
         
