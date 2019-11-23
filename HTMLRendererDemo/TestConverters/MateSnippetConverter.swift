@@ -38,7 +38,7 @@ struct FontSize {
     func normalize(baseFontSizeInPt: Float, viewportWidth: Float) -> FontSize {
         switch self.unit {
         case .pixels:
-            #warning("Do you need to do a scale conversion?")
+            // TODO: ("Do you need to do a scale conversion?")
             let relative = self.value / baseFontSizeInPt
             return FontSize(value: relative, unit: .relative)
         case .points:

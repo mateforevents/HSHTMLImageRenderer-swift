@@ -215,10 +215,8 @@ class HSHTMLImageRenderingOperation: HSAsyncOperation {
     
     private func renderUsingLegacyMethod(_ targetSize: CGSize, webView: HSRenderingWebView) -> UIImage? {
 
-        //#warning("Figure out if this image should be opaque or not!")
-
         // adapted from this: http://atmarkplant.com/wkwebview-screenshots/
-        
+        // TODO: ("Determine if context should be opaque or not.  Affects clear labels?")
         UIGraphicsBeginImageContextWithOptions(targetSize, true, UIScreen.main.scale)
         guard let ctx = UIGraphicsGetCurrentContext() else {
             print("Could not get context to render WebView...")

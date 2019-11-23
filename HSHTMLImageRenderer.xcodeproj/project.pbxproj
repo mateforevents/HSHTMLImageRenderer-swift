@@ -247,6 +247,7 @@
 			buildPhases = (
 				DC787EAC237AB78900BCF5B1 /* Headers */,
 				DC787EAD237AB78900BCF5B1 /* Sources */,
+				D890870023895A9200E14A3B /* Run Script - Warnings and Errors from Keywords */,
 				DC787EAE237AB78900BCF5B1 /* Frameworks */,
 				DC787EAF237AB78900BCF5B1 /* Resources */,
 			);
@@ -365,6 +366,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D890870023895A9200E14A3B /* Run Script - Warnings and Errors from Keywords */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script - Warnings and Errors from Keywords";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# https://medium.com/@cboynton/todo-make-your-notes-on-xcode-stand-out-5f5124ec064c\nTAGS=\"TODO:|FIXME:\"\nERRORTAG=\"ERROR:\"\nfind \"${SRCROOT}\" \\( -name \"*.h\" -or -name \"*.m\" -or -name \"*.swift\" \\) -print0 | xargs -0 egrep --with-filename --line-number --only-matching \"($TAGS).*\\$|($ERRORTAG).*\\$\" | perl -p -e \"s/($TAGS)/ warning: \\$1/\" | perl -p -e \"s/($ERRORTAG)/ error: \\$1/\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		DC787EAD237AB78900BCF5B1 /* Sources */ = {
