@@ -215,7 +215,7 @@ class HSHTMLImageRenderingOperation: HSAsyncOperation {
     
     private func renderUsingLegacyMethod(_ targetSize: CGSize, webView: HSRenderingWebView) -> UIImage? {
 
-        #warning("Figure out if this image should be opaque or not!")
+        //#warning("Figure out if this image should be opaque or not!")
 
         // adapted from this: http://atmarkplant.com/wkwebview-screenshots/
         
