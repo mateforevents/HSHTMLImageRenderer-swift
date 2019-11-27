@@ -26,7 +26,7 @@ public struct TemplateAttributes {
     public static var defaultTemplateAttributes: [String: Any] = {
        return [
         TemplateAttributes.Key.lineHeight: Float(1.0),
-        TemplateAttributes.Key.font: UIFont.systemFont(ofSize: 16),
+        TemplateAttributes.Key.font: UIFont(name: "Helvetica", size: 16)!,
         TemplateAttributes.Key.textColor: UIColor.black,
         TemplateAttributes.Key.backgroundColor: UIColor.white,
         TemplateAttributes.Key.targetWidth: Float(300)

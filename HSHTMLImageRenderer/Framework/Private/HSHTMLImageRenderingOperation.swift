@@ -194,7 +194,9 @@ class HSHTMLImageRenderingOperation: HSAsyncOperation {
                     config.afterScreenUpdates = true
                 } else {
                     // Fallback on earlier versions
+                    webView.layoutIfNeeded()
                 }
+                
                 webView.takeSnapshot(with: config) { (image, error) in
                  
                     completion(image)

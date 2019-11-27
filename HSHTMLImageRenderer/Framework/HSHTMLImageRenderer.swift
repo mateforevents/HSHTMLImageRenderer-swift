@@ -18,6 +18,8 @@ public class HSHTMLImageRenderer: NSObject {
     
     /// Make sure you call `.sharedRenderer(in: window)` first!
     private static var _shared: HSHTMLImageRenderer?
+    
+    @objc
     public static var shared: HSHTMLImageRenderer {
         return _shared!
     }
@@ -26,6 +28,7 @@ public class HSHTMLImageRenderer: NSObject {
     private(set) var operationsRequested: Int = 0
     
     /// basically when you set up a renderer, you'll want to initialize it with this method, and likely right after that register templates, set snippet converters, etc.
+    @objc
     public static func sharedRenderer(in window: UIWindow) -> HSHTMLImageRenderer {
         guard _shared == nil else {
             return _shared!
@@ -110,7 +113,7 @@ public class HSHTMLImageRenderer: NSObject {
      - Parameter htmlString: the snippet of HTML you want to inject into your template and have rendered to an image
      - Parameter jobIdentifier: Consider this otherwise a cache identifier.  If you make a subsequent call to this `renderHTML(...)` method, `jobIdentifier` is used to retrieve any previously rendered version of `htmlString`
      - Parameter targetWidth: because your content is dynamic, it also needs to be constrained by width.  You need to provide this here.  If you provide a targetWidth or targetHeight in the `attributes` argument, they will be overwritten by this value.
-     - Parameter targetHeight: (Optional) if you provide a `targetHeight`, the resulting rendered image will be padded top and bottom to fit that height, or scaled to fit into the height, so that the final image that is given in the `completion` block will have the dimensions `targetWidth` x `targetHeight`
+     - Parameter targetHeight: (Optional) if you provide a `targetHeight`, the resulting rendered image will be padded top and bottom to fit that height, or scaled to fit into the height, so that the final image that is given in the `completion` block will have the dimensions `targetWidth` x `targetHeight`.  Should ideally be an optional, but for the sake of interoperability with objectiveC, provide a value of 0 to ignore targetHeight.
      - Parameter templateIdentifier: The name of the template you want to use to render your `htmlString`.  If you do not provide a `templateIdentifier`, the `HSHTMLImageRenderer` will just pass in the htmlString to the rendering WKWebView.  Note, working without templates has not been thoroughly tested yet. (21.11.2019).  You should first call `registerTemplate:identifier:` before you commit any rendering job, so that the `HSHTMLImageRenderer`has your template available.  Note, by default, a template is provided under the identifier `HSHTMLTemplateTransformer.defaultTemplateIdentifier`.  NOTE: If your template was not registered, then the `completion` block will return with an error.
      - Parameter attributes: This will most likely be a dictionary of `TemplateAttributes.Key` raw values.  If you customize your template, you will have to look through this source code to see how these attributes are substituted into your template.
      - Parameter ignoreCache: If you set this argument to `true`, it will guarantee that the `htmlString` is rendered and not retrieved from the cache.
@@ -118,10 +121,11 @@ public class HSHTMLImageRenderer: NSObject {
      - Parameter completion: The result of the call.  It provides the `jobIdentifier` to provide context.  If it succeeded, it will provide the image result, whether that came from the cache, or otherwise it will provide an error.  `error` will be defined if you try to render with a `templateIdentifier` that has not been registered via `registerTemplate:identifier:`.  `completion` is called immediately if the image is found in the cache.
      */
   
+    @objc
     public func renderHTML(_ htmlString: String,
                            jobIdentifier: String,
                            targetWidth: Float,
-                           targetHeight: Float? = nil,
+                           targetHeight: Float = 0.0, /* 0.0 means ignore the height*/
                            templateIdentifier: String? = HSHTMLTemplateTransformer.defaultTemplateIdentifier,
                            attributes: [String: Any] = TemplateAttributes.defaultTemplateAttributes,
                            ignoreCache: Bool = false,
@@ -139,7 +143,13 @@ public class HSHTMLImageRenderer: NSObject {
         // have to insert/override targetWidth/Height
         var updatedAttributes = attributes
         updatedAttributes[TemplateAttributes.Key.targetWidth] = targetWidth
-        updatedAttributes[TemplateAttributes.Key.targetHeight] = targetHeight
+        
+        if targetHeight > 0 {
+            updatedAttributes[TemplateAttributes.Key.targetHeight] = targetHeight
+        } else {
+            updatedAttributes[TemplateAttributes.Key.targetHeight] = nil
+        }
+        
         
         let renderOp = HSHTMLImageRenderingOperation(html: htmlString,
                                                      jobIdentifier: jobIdentifier,
@@ -175,7 +185,12 @@ public class HSHTMLImageRenderer: NSObject {
         self.jobQueue.addOperation(renderOp)
     }
     
+    @objc public func renderHTML(_ htmlString: String) {
+        // testing
+    }
+    
     /// will clean up and release some resources.
+    @objc
     @discardableResult public func finishRendering() -> Bool {
         guard self.jobQueue.operationCount == 0 else {
             log("Fail!  You should only call this after all your rendering jobs are finished!")

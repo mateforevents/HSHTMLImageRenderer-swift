@@ -17,6 +17,11 @@ There are a few tricks:
         - apparently it was adding that by default.  Grrr....
     - Once you have those in place, then the image can be dynamically generated and it fits the content based on the targetWidth.
     
+Swift and Objective-C Interoperability
+--------------------------------------
+
+Here's a very useful resource for the considerations you should make:
+https://spin.atomicobject.com/2015/09/24/swift-to-objective-c/
     
         
 Cocoapods - Podspecs
