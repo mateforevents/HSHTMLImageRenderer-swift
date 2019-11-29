@@ -44,6 +44,7 @@ class HSHTMLImageRenderingOperation: HSAsyncOperation {
          renderer: HSHTMLImageRenderer,
          ignoreCache: Bool,
          shouldCache: Bool,
+         completionQueue: DispatchQueue,
          completion: HSOperationCompletionBlock?) {
         
         self.htmlToLoad = html
@@ -56,7 +57,7 @@ class HSHTMLImageRenderingOperation: HSAsyncOperation {
         
         self.userInfo = [UserInfoKey.identifier: jobIdentifier]
         
-        super.init(completion: completion)
+        super.init(completion: completion, completionQueue: completionQueue)
         self.name = jobIdentifier
     }
     

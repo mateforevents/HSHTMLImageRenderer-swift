@@ -130,6 +130,7 @@ public class HSHTMLImageRenderer: NSObject {
                            attributes: [String: Any] = TemplateAttributes.defaultTemplateAttributes,
                            ignoreCache: Bool = false,
                            cacheResult: Bool = true,
+                           completionQueue: DispatchQueue? = nil, /* if nil, uses the queue you invoked this method on. */
                            completion: @escaping HSHTMLImageRendererCompletionBlock) {
         
         // first check if we've rendered this already
@@ -150,6 +151,15 @@ public class HSHTMLImageRenderer: NSObject {
             updatedAttributes[TemplateAttributes.Key.targetHeight] = nil
         }
         
+        var queueForCompletion: DispatchQueue
+        if let providedQueue = completionQueue {
+            queueForCompletion = providedQueue
+        } else if let currentQueue = OperationQueue.current?.underlyingQueue {
+            queueForCompletion = currentQueue
+        } else {
+            queueForCompletion = DispatchQueue.main
+        }
+            
         
         let renderOp = HSHTMLImageRenderingOperation(html: htmlString,
                                                      jobIdentifier: jobIdentifier,
@@ -158,6 +168,7 @@ public class HSHTMLImageRenderer: NSObject {
                                                      renderer: self,
                                                      ignoreCache: ignoreCache,
                                                      shouldCache: cacheResult,
+                                                     completionQueue: queueForCompletion,
                                                      completion:
             { (success, userInfo, error) in
                 

@@ -28,8 +28,12 @@ class HSAsyncOperation: Operation {
     var _error: Error?
     var _operationCompletionBlock: HSOperationCompletionBlock?
     
-    init(completion: HSOperationCompletionBlock?) {
+    let completionQueue: DispatchQueue
+    
+    init(completion: HSOperationCompletionBlock?, completionQueue: DispatchQueue = .main) {
         _operationCompletionBlock = completion
+        self.completionQueue = completionQueue
+        super.init()
     }
     
     func work() {
@@ -50,7 +54,7 @@ class HSAsyncOperation: Operation {
         if let completion = _operationCompletionBlock {
             
             self._setCompletionBlock {
-                DispatchQueue.main.async {
+                self.completionQueue.async {
                     completion(success, info, error)
                 }
             }
