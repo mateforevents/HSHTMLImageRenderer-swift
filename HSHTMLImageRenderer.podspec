@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "HSHTMLImageRenderer"
-  spec.version      = "0.2.3"
+  spec.version      = "0.2.5"
   spec.summary      = "HSHTMLImageRenderer is a way to use a WKWebView to render HTML content to an image."
 
   # There is a lot of technology present in a web browser.  Why not take advantage of it to render images?
@@ -69,7 +69,7 @@ Pod::Spec.new do |spec|
 
   # spec.platform     = :ios
   spec.platform     = :ios, "9.0"
-  spec.swift_version = "4.2"
+  spec.swift_version = "5.0"
 
   #  When using multiple platforms
   # spec.ios.deployment_target = "5.0"

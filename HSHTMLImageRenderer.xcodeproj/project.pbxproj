@@ -75,7 +75,7 @@
 		DC787EC5237AB7B600BCF5B1 /* HSHTMLImageRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HSHTMLImageRenderer.swift; sourceTree = "<group>"; };
 		DC787EC7237AB7B600BCF5B1 /* UIColor+Hex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex.swift"; sourceTree = "<group>"; };
 		DC787ECF237AB88400BCF5B1 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
-		DC787ED0237AB89F00BCF5B1 /* HSHTMLImageRenderer.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = HSHTMLImageRenderer.podspec; sourceTree = "<group>"; };
+		DC787ED0237AB89F00BCF5B1 /* HSHTMLImageRenderer.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = HSHTMLImageRenderer.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		DC787ED5237ABF6900BCF5B1 /* HTMLRendererDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HTMLRendererDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC787ED7237ABF6900BCF5B1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DC787EDB237ABF6900BCF5B1 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -594,7 +594,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.2.4;
+				MARKETING_VERSION = 0.2.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.walnutprods.HSHTMLImageRenderer;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -621,7 +621,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.2.4;
+				MARKETING_VERSION = 0.2.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.walnutprods.HSHTMLImageRenderer;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
