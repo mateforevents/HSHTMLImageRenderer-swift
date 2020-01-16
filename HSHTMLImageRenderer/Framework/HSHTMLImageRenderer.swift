@@ -109,7 +109,7 @@ public class HSHTMLImageRenderer: NSObject {
     }
     
     /**
-            The principle method you use when rendering HTML snippets.
+            The principal method you use when rendering HTML snippets.
      - Parameter htmlString: the snippet of HTML you want to inject into your template and have rendered to an image
      - Parameter jobIdentifier: Consider this otherwise a cache identifier.  If you make a subsequent call to this `renderHTML(...)` method, `jobIdentifier` is used to retrieve any previously rendered version of `htmlString`
      - Parameter targetWidth: because your content is dynamic, it also needs to be constrained by width.  You need to provide this here.  If you provide a targetWidth or targetHeight in the `attributes` argument, they will be overwritten by this value.

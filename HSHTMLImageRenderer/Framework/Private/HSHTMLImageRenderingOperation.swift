@@ -187,10 +187,13 @@ class HSHTMLImageRenderingOperation: HSAsyncOperation {
             
             print("WebKitRect: \(wkRect), jsRect: \(jsRect)")
             
+            var snapshotRect = wkRect
+            snapshotRect.size.height += 3  // compensation because the getContainerRect doesn't always encapsulate all the content
+            
             if #available(iOS 11.0, *) {
                 
                 let config = WKSnapshotConfiguration()
-                config.rect = wkRect
+                config.rect = snapshotRect
                 if #available(iOS 13.0, *) {
                     config.afterScreenUpdates = true
                 } else {
