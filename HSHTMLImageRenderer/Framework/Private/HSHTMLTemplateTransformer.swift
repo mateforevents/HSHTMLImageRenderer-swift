@@ -48,7 +48,7 @@ public class HSHTMLTemplateTransformer: NSObject {
     fileprivate var templateRegistry: [String: String] = [:]
     
     // incoming snippet, outgoing snippet
-    public var snippetTransformer: ((_ snippet: String, _ template: String) -> (transformedSnippet: String, transformedTemplate: String))? = nil
+    public var snippetTransformer: ((_ snippet: String, _ template: String?) -> (transformedSnippet: String, transformedTemplate: String?))? = nil
     
     internal static func defaultTemplate() -> String {
         let template = try! String(contentsOf: self.defaultTemplateURL(), encoding: .utf8)
@@ -89,7 +89,7 @@ public class HSHTMLTemplateTransformer: NSObject {
         if let transformer = self.snippetTransformer {
             let transformed = transformer(transformedSnippet, transformedTemplate)
             transformedSnippet = transformed.transformedSnippet
-            transformedTemplate = transformed.transformedTemplate
+            transformedTemplate = transformed.transformedTemplate ?? transformedTemplate
         }
         
         // if you haven't removed this template variable, it needs to be!

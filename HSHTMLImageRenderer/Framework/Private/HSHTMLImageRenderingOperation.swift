@@ -95,6 +95,9 @@ class HSHTMLImageRenderingOperation: HSAsyncOperation {
                                                                   usingTemplateWithIdentifier: templateIdentifier,
                                                                   attributes: self.attributes)
                 
+            } else if let snippetConverter = transformer.snippetTransformer {
+                // using no template, you may still want to convert your snippet
+                modifiedString = snippetConverter(modifiedString, nil).transformedSnippet
             }
             
             

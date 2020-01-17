@@ -49,13 +49,14 @@ class ViewController: UIViewController {
         }
         
         let renderer = HSHTMLImageRenderer.sharedRenderer(in: window)
-        let snippetTransformer = MateSnippetConverter(targetOutputWidth: targetWidth)
-        let baseFontSize = MateSnippetConverter.baseFontSize(for: targetWidth)
+        let snippetTransformer = MateSnippetConverter(viewportWidth: targetWidth)
         
         let testReplacements = snippetReplacements
         
         renderer.templateTransformer.snippetTransformer = { (snippet, template) in
-            let result = snippetTransformer.convert((snippet: snippet, template: template), replacements: testReplacements)
+            let result = snippetTransformer.convert(snippet: snippet,
+                                                    template: template,
+                                                    replacements: testReplacements)
             return (result.snippet, result.template)
         }
         
@@ -64,7 +65,7 @@ class ViewController: UIViewController {
                             targetWidth: targetWidth,
                             targetHeight: 0.0,
                             templateIdentifier: HSHTMLTemplateTransformer.defaultTemplateIdentifier,
-                            attributes: [TemplateAttributes.Key.fontSize: baseFontSize],
+                            attributes: [:],
                             ignoreCache: false,
                             cacheResult: true) { [weak self] (identifier, image, wasCached, error) in
                                 
