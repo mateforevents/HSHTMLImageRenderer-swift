@@ -3,7 +3,7 @@
 //  HSHTMLImageRenderer
 //
 //  Created by Stephen O'Connor on 12.11.19.
-//  Copyright © 2019 Walnut Productions. All rights reserved.
+//  Copyright © 2019 Stephen O'Connor. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

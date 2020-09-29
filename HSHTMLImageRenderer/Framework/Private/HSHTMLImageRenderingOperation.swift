@@ -1,9 +1,9 @@
 //
 //  HSHTMLImageRenderingOperation.swift
-//  MatePrint
+//  HSHTMLImageRenderer
 //
-//  Created by Stephen O'Connor (MHP) on 08.11.19.
-//  Copyright © 2019 MATE. All rights reserved.
+//  Created by Stephen O'Connor on 08.11.19.
+//  Copyright © 2019 Stephen O'Connor. All rights reserved.
 //
 
 import UIKit
