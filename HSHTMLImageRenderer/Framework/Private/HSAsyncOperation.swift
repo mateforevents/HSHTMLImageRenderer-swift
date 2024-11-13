@@ -72,16 +72,6 @@ class HSAsyncOperation: Operation {
         super.completionBlock = completion
     }
     
-    override var completionBlock: (() -> Void)? {
-        get {
-            return super.completionBlock
-        }
-        set {
-            // do nothing!!
-            fatalError("You should never explicitly call setCompletionBlock: unless you are overriding in the subclass.  use operationCompletionBlock: instead")
-        }
-    }
-    
     // MARK: - The Meat
     override func start() {
         log("Started \(self.description)")
